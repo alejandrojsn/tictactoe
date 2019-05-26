@@ -231,7 +231,7 @@ function humanPlay(ev){
   }
   //Si hizo una jugada correcta, ahora juega la máquina
   if(player==2){
-    computerPlay();
+    setTimeout(computerPlay, 500);
   }
 }
 
