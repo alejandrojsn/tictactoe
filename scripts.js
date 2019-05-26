@@ -115,11 +115,126 @@ function play(row, column){
 
 function computerPlay(){
   //Elige una celda al azar entre las disponibles
-  let cell = remainingCells[Math.round(Math.random() * (remainingCells.length-1))];
-  let row = getRow(cell);
-  let column = getColumn(cell);
+  //let cell = remainingCells[Math.round(Math.random() * (remainingCells.length-1))];
+  //let row = getRow(cell);
+  //let column = getColumn(cell);
 
-  play(row, column);
+  for(let i = 0; i < 3; i++){
+
+    let searching = -1, empty = 0, count = 0;
+
+    for(let j = 0; j < 3; j++){
+      if(cells[i][j] === 0){
+        empty = j;
+      } else {
+
+        if(searching === -1){
+          searching = cells[i][j];
+          count++;
+        } else if(searching === cells[i][j]) {
+          count++;
+        }
+      }
+    }
+
+    if(count === 2 && empty){
+      play(i, empty);
+      return 0;
+    }
+  }
+
+  for(let i = 0; i < 3; i++){
+
+    let searching = -1, empty = 0, count = 0;
+
+    for(let j = 0; j < 3; j++){
+      if(cells[j][i] === 0){
+        empty = j;
+      } else {
+        
+        if(searching === -1){
+          searching = cells[j][i];
+          count++;
+        } else if(searching === cells[j][i]) {
+          count++;
+        }
+      }
+    }
+
+    if(count === 2 && empty){
+      play(empty, i);
+      return 0;
+    }
+  }
+
+  {
+    let searching = -1, empty = 0, count = 0;
+
+    for(let i = 0; i < 3; i++){
+      if(cells[i][i] === 0){
+        empty = i;
+      } else {
+        if(searching === -1){
+          searching = cells[i][i];
+          count++;
+        } else if(searching === cells[i][i]) {
+          count++;
+        }
+      }
+    }
+
+    if(count === 2 && empty){
+      play(empty, empty);
+      return 0;
+    }
+  }
+
+  {
+    let searching = -1, empty = 0, count = 0;
+
+    for(let i = 0; i < 3; i++){
+      if(cells[i][2-i] === 0){
+        empty = i;
+      } else {
+        if(searching === -1){
+          searching = cells[i][2-i];
+          count++;
+        } else if(searching === cells[i][2-i]) {
+          count++;
+        }
+      }
+    }
+
+    if(count === 2 && empty){
+      play(empty, 2-empty);
+      return 0
+    }
+  }
+
+  if (cells[1][1] === 0) {
+    play(1, 1);
+    return 0;
+  }
+
+  if(cells[0][0] === 0){
+    play(0, 0);
+    return 0;
+  }
+
+  if(cells[0][2] === 0){
+    play(0, 2);
+    return 0;
+  }
+
+  if(cells[2][0] === 0){
+    play(2, 0);
+    return 0;
+  }
+
+  if(cells[2][2] === 0){
+    play(2, 2);
+    return 0;
+  }
 }
 
 function humanPlay(ev){
