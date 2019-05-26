@@ -4,13 +4,13 @@ let cells, remainingCells, player;
 //Inicializando variables
 const board = document.getElementById("board");
 player=1;
-cells = new Map();
-remainingCells = new Array();
+cells = [[], [], []];
+remainingCells = [];
 
 //Creamos el mapa de las celdas
-for (var i = 1; i <= 3; i++) {
-  for (var j = 1; j <= 3; j++) {
-    cells.set(getCell(i,j), false);
+for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    cells[i][j] = 0;
     remainingCells.push(getCell(i,j));
   }
 }
@@ -33,40 +33,49 @@ function getColumn(cell){
 // Checar si un mismo jugador marcó todas las celdas de una misma columna
 function checkColumn(column){
   //Esto es sólo para hacerme la vida más fácil en vez de escribir cells.get(getCell([1,2,3],column)) cuatro veces
-  let c = new Array();
-  for(let k = 1; k <= 3; k++){
-    c.push(cells.get(getCell(k,column)));
+  let result = true;
+
+  for(let i = 0; i < 2; i++) {
+    if (cells[i][column] !== cells[i+1][column]) {
+      result = false;
+      break;
+    }
   }
 
   //Si el mismo jugador marcó todas las celdas de la columna, devuelve true
-  return c[0]==c[1] && c[1]==c[2]
+  return result
 }
 
 // Checar si un mismo jugador marcó todas las celdas de una misma fila
 function checkRow(row){
   //Esto es sólo para hacerme la vida más fácil en vez de escribir cells.get(getCell(row, [1,2,3])) cuatro veces
-  let c = new Array();
-  for(let k = 1; k <= 3; k++){
-    c.push(cells.get(getCell(row,k)));
+  let result = true;
+
+  for(let i = 0; i < 2; i++){
+    if (cells[row][i] !== cells[row][i+1]) {
+      result = false;
+      break;
+    }
   }
+  
   //Si el mismo jugador marcó todas las celdas de la fila, devuelve true
-  return c[0]==c[1] && c[1]==c[2]
+  return result;
 }
 
 //Checar si un mismo jugador marcó todas las celdas de una diagonal
 function checkDiagonal(row, column){
   //Si la fila y la columna son iguales, significa que la celda está en la diagonal principal
-  if(row==column){
+  if(row === column){
     //Checamos si un jugador marcó todas las celdas de esa diagonal
-    if((cells.get(11)==cells.get(22)) && (cells.get(22)==cells.get(33))){
+    if(cells[0][0] === cells[1][1] && cells[1][1] === cells[2][2]){
       return true;
     }
   }
   //Si el valor absoluto de la resta de la fila y la columna da 2, o se trata de la celda 22, la celda es parte de la diagonal secundaria
-  else if((Math.abs(row-column)==2) || (getCell(row, column)==22)){
+  else if(row + column === 2){
     //Checamos si un jugador marcó todas las celdas de esa diagonal
-    if((cells.get(31)==cells.get(22)) && (cells.get(22)==cells.get(13))){
-      return true
+    if(cells[0][2] == cells[1][1] && cells[1][1] == cells[2][0]){
+      return true;
     }
   }
   //Devolvemos falso en cualquier otro caso
@@ -75,28 +84,21 @@ function checkDiagonal(row, column){
 }
 
 //Checamos si un jugador ganó
-function checkWin(cell){
-  let row=getRow(cell);
-  let column=getColumn(cell);
+function checkWin(row, column){
 
   //Se cumplen alguna de las condiciones para ganar?
-  if(checkDiagonal(row, column) || checkRow(row) || checkColumn(column)){
-    return true;
-  }
-  else{
-    return false;
-  }
+  return checkDiagonal(row, column) || checkRow(row) || checkColumn(column);
 }
 
-function play(cell){
+function play(row, column){
   //La celda aún no ha sido seleccionada?
-  if(!cells.get(cell)){
+  if(cells[row][column] === 0){
     //Le asignamos la celda al jugador
-    cells.set(cell, player);
+    cells[row][column] = player;
     //Ponemos una X o una O, según sea el caso
-    document.getElementById(`${cell}`).classList.add(player==1 ? 'x' : 'o');
+    document.querySelector(`[data-row="${row}"][data-column="${column}"]`).classList.add(player==1 ? 'x' : 'o');
     //Alguien ganó?
-    if(checkWin(cell)){
+    if(checkWin(row, column)){
       //Mostramos quién ganó
       document.getElementById('body').innerHTML += `Player ${player} wins`;
       //Eliminamos el listener
@@ -104,7 +106,7 @@ function play(cell){
       return false;
     }
     //Removemos la celda de las celdas disponibles
-    remainingCells.splice(remainingCells.indexOf(cell), 1);
+    remainingCells.splice(remainingCells.indexOf(getCell(row, column)), 1);
     //Cambiamos de jugador
     player = player==1 ? 2 : 1;
   }
@@ -113,14 +115,21 @@ function play(cell){
 
 function computerPlay(){
   //Elige una celda al azar entre las disponibles
-  play(remainingCells[Math.round(Math.random() * (remainingCells.length-1))]);
+  let cell = remainingCells[Math.round(Math.random() * (remainingCells.length-1))];
+  let row = getRow(cell);
+  let column = getColumn(cell);
+
+  play(row, column);
 }
 
 function humanPlay(ev){
   //Si es su turno, juega
   if(player==1){
 
-    play(Number(ev.target.attributes.id.value));
+    let row = Number(ev.target.attributes["data-row"].value);
+    let column = Number(ev.target.attributes["data-column"].value);
+
+    play(row, column);
   }
   //Si hizo una jugada correcta, ahora juega la máquina
   if(player==2){
