@@ -4,31 +4,7 @@ let cells, remainingCells, player;
 //Inicializando variables
 const board = document.getElementById("board");
 player=1;
-cells = [[], [], []];
-remainingCells = [];
-
-//Creamos el mapa de las celdas
-for (let i = 0; i < 3; i++) {
-  for (let j = 0; j < 3; j++) {
-    cells[i][j] = 0;
-    remainingCells.push(getCell(i,j));
-  }
-}
-
-// Conseguir la celda sabiendo la fila y columna
-function getCell(row, column){
-  return row*10+column;
-}
-
-// Conseguir la fila sabiendo la celda
-function getRow(cell){
-  return ~~(cell/10);
-}
-
-// Conseguir la columna sabiendo la celda
-function getColumn(cell){
-  return cell % 10;
-}
+cells = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
 
 // Checar si un mismo jugador marcó todas las celdas de una misma columna
 function checkColumn(column){
@@ -105,8 +81,6 @@ function play(row, column){
       board.removeEventListener("click", humanPlay);
       return false;
     }
-    //Removemos la celda de las celdas disponibles
-    remainingCells.splice(remainingCells.indexOf(getCell(row, column)), 1);
     //Cambiamos de jugador
     player = player==1 ? 2 : 1;
   }
