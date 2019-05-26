@@ -39,13 +39,7 @@ function checkColumn(column){
   }
 
   //Si el mismo jugador marcó todas las celdas de la columna, devuelve true
-  if((c[0]==c[1]) && (c[1]==c[2])){
-    return true;
-  }
-  //Si no, devuelve false
-  else{
-    return false;
-  }
+  return c[0]==c[1] && c[1]==c[2]
 }
 
 // Checar si un mismo jugador marcó todas las celdas de una misma fila
@@ -56,13 +50,7 @@ function checkRow(row){
     c.push(cells.get(getCell(row,k)));
   }
   //Si el mismo jugador marcó todas las celdas de la fila, devuelve true
-  if((c[0]==c[1]) && (c[1]==c[2])){
-    return true;
-  }
-  //Si no, devuelve false
-  else{
-    return false;
-  }
+  return c[0]==c[1] && c[1]==c[2]
 }
 
 //Checar si un mismo jugador marcó todas las celdas de una diagonal
@@ -131,6 +119,7 @@ function computerPlay(){
 function humanPlay(ev){
   //Si es su turno, juega
   if(player==1){
+
     play(Number(ev.target.attributes.id.value));
   }
   //Si hizo una jugada correcta, ahora juega la máquina
