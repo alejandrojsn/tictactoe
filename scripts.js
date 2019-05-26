@@ -121,7 +121,7 @@ function computerPlay(){
 
   for(let i = 0; i < 3; i++){
 
-    let searching = -1, empty = 0, count = 0;
+    let searching = -1, empty = -1, count = 0;
 
     for(let j = 0; j < 3; j++){
       if(cells[i][j] === 0){
@@ -137,7 +137,7 @@ function computerPlay(){
       }
     }
 
-    if(count === 2 && empty){
+    if(count === 2 && empty > -1){
       play(i, empty);
       return 0;
     }
@@ -145,7 +145,7 @@ function computerPlay(){
 
   for(let i = 0; i < 3; i++){
 
-    let searching = -1, empty = 0, count = 0;
+    let searching = -1, empty = -1, count = 0;
 
     for(let j = 0; j < 3; j++){
       if(cells[j][i] === 0){
@@ -161,14 +161,14 @@ function computerPlay(){
       }
     }
 
-    if(count === 2 && empty){
+    if(count === 2 && empty > -1){
       play(empty, i);
       return 0;
     }
   }
 
   {
-    let searching = -1, empty = 0, count = 0;
+    let searching = -1, empty = -1, count = 0;
 
     for(let i = 0; i < 3; i++){
       if(cells[i][i] === 0){
@@ -183,14 +183,14 @@ function computerPlay(){
       }
     }
 
-    if(count === 2 && empty){
+    if(count === 2 && empty > -1){
       play(empty, empty);
       return 0;
     }
   }
 
   {
-    let searching = -1, empty = 0, count = 0;
+    let searching = -1, empty = -1, count = 0;
 
     for(let i = 0; i < 3; i++){
       if(cells[i][2-i] === 0){
@@ -205,7 +205,7 @@ function computerPlay(){
       }
     }
 
-    if(count === 2 && empty){
+    if(count === 2 && empty > -1){
       play(empty, 2-empty);
       return 0
     }
@@ -234,6 +234,15 @@ function computerPlay(){
   if(cells[2][2] === 0){
     play(2, 2);
     return 0;
+  }
+
+  for(let i = 0; i < 3; i++){
+    for(let j = 0; j < 3; j++){
+      if (cells[i][j] === 0) {
+        play(i, j);
+        return 0;
+      }
+    }
   }
 }
 
