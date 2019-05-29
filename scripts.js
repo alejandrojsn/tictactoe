@@ -1,8 +1,11 @@
-var cells, player, aion;
+var cells, player, aion, remainingCells, continuePlayingMessage, gameOverMessage;
 
 const board = document.getElementById("board");
-player = 1;
-cells = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+
+gameOverMessage = document.createElement('p');
+
+continuePlayingMessage = document.createElement('p');
+continuePlayingMessage.innerHTML = "Volver a jugar";
 
 function checkColumn(column){
   let result = true;
@@ -57,9 +60,42 @@ function checkWin(row, column){
   return checkDiagonal(row, column) || checkRow(row) || checkColumn(column);
 }
 
+function startGame() {
+  player = 1;
+  remainingCells = 9;
+  cells = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+
+  board.addEventListener("click", humanPlay);
+}
+
+function resetGame() {
+  document.querySelectorAll('.cell').forEach(cell => {
+    cell.classList.remove('x');
+    cell.classList.remove('o');
+  });
+
+  startGame();
+
+  continuePlayingMessage.remove();
+  gameOverMessage.remove();
+}
+
+function endGame(winner){
+  gameOverMessage.innerHTML = winner == 0 ? 'Tie!' : `Player ${winner} won!`;
+
+  document.querySelector('body').appendChild(gameOverMessage);
+
+  document.querySelector('body').appendChild(continuePlayingMessage);
+  continuePlayingMessage.addEventListener("click", resetGame);
+
+  board.removeEventListener("click", humanPlay);
+}
+
 function play(row, column){
   
   if(cells[row][column] === 0){
+
+    remainingCells -= 1;
     
     cells[row][column] = player;
     
@@ -67,9 +103,12 @@ function play(row, column){
     
     if(checkWin(row, column)){
       
-      document.querySelector('body').innerHTML += `Player ${player} wins`;
-      
-      board.removeEventListener("click", humanPlay);
+      endGame(player);
+      return false;
+
+    } else if (!remainingCells) {
+
+      endGame(0);
       return false;
     }
     
@@ -231,11 +270,11 @@ function init (ev) {
 
   document.getElementById("intro").remove();
 
-  console.log(board);
+  console.dir(board);
 
   board.style.display = "grid";
 
-  board.addEventListener("click", humanPlay);
+  startGame();
 
 }
 
